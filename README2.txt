@@ -59,3 +59,9 @@ serverless info
 # Test locally
 -> serverless invoke local --function apiHandler
 
+How to send requests with Cookie:
+		GET https://partnerapi.watermetrics.co.nz:9096/apiV2/GetData/1234
+		Cookie: token=PASTE_YOUR_TOKEN_HERE
+		Accept: application/json
+
+		

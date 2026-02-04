@@ -2,8 +2,8 @@
 node_modules
 
 # Secrets and local config
-.env
-.env.*
+# .env
+# .env.*
 
 # Serverless and build folders
 .serverless
