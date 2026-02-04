@@ -24,17 +24,22 @@ export const login = async (): Promise<APIGatewayProxyResult> => {
   return sendResponse(response.status, data);
 };
 
+
 // GET SITES (GET)
 export const getSites = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const token = event.headers['authorization']; // Expecting "Bearer <token>"
   
   const response = await fetch(`${BASE_URL}/apiV2/GetMySitesAndMeasures`, {
     method: 'GET',
-    headers: { 'Authorization': token || '' }
+    headers: { 
+      'Cookie': `token=${token}`
+      //'Authorization': token || '' 
+    }
   });
   const data = await response.json();
   return sendResponse(response.status, data);
 };
+
 
 // GET DATA (GET) - Supports Query Params like ?siteId=123
 export const getData = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -50,12 +55,16 @@ export const getData = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
   //const queryParams = new URLSearchParams(event.queryStringParameters as any).toString();
   const response = await fetch(`${BASE_URL}/apiV2/GetData/${pathParams}`, {
     method: 'GET',
-    headers: { 'Authorization': token || '' }
+    headers: { 
+      'Cookie': `token=${token}`
+      //'Authorization': token || '' 
+    }
   });
   console.log(`${BASE_URL}/apiV2/GetData?${pathParams}`);
   const data = await response.json();
   return sendResponse(response.status, data);
 };
+
 
 // LOGOFF (POST)
 export const logoff = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -63,11 +72,12 @@ export const logoff = async (event: APIGatewayProxyEvent): Promise<APIGatewayPro
   
   const response = await fetch(`${BASE_URL}/apiV2/Logoff`, {
     method: 'POST',
-    headers: { 'Authorization': token || '' }
+    headers: { 'Cookie': `token=${token}` }
   });
   const data = await response.json();
   return sendResponse(response.status, data);
 };
+
 
 //TEST METHOD TO FETCH DUMMY DATA
 export const getDummyData = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
