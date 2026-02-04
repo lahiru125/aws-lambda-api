@@ -10,12 +10,8 @@ provider:
   environment:
     WM_USERNAME: ${env:WM_USERNAME}
     WM_PASSWORD: ${env:WM_PASSWORD}
-    WM_BASE_URL: ${env:WM_BASE_URL}
-
-# build:
-#   esbuild:
-#     bundle: true      # This allows you to use 'import' and 'fetch'
-#     minify: true
+    WM_BASE_URL: ${env:WM_BASE_URL, 'qa-partnerapi.watermetrics.co.nz:8095'}
+    WM_TEST_BASE_URL: ${env:WM_TEST_BASE_UR, 'https://jsonplaceholder.typicode.com'}
 
 functions:
   login:
@@ -37,3 +33,8 @@ functions:
     handler: handler.logoff
     events:
       - httpApi: 'POST /apiV2/Logoff'
+
+  getDummyData:
+    handler: handler.getDummyData
+    events:
+      - httpApi: 'GET /todos/{proxy+}'

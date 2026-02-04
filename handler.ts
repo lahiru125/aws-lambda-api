@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 const BASE_URL = process.env.WM_BASE_URL;
+const TEST_BASE_URL = process.env.WM_TEST_BASE_URL;
 
 // Shared Helper for JSON responses
 const sendResponse = (statusCode: number, data: any): APIGatewayProxyResult => ({
@@ -9,7 +10,7 @@ const sendResponse = (statusCode: number, data: any): APIGatewayProxyResult => (
   body: JSON.stringify(data),
 });
 
-// 1. LOGIN (POST)
+// LOGIN (POST)
 export const login = async (): Promise<APIGatewayProxyResult> => {
   const response = await fetch(`${BASE_URL}/apiV2/Login`, {
     method: 'POST',
@@ -23,7 +24,7 @@ export const login = async (): Promise<APIGatewayProxyResult> => {
   return sendResponse(response.status, data);
 };
 
-// 2. GET SITES (GET)
+// GET SITES (GET)
 export const getSites = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const token = event.headers['authorization']; // Expecting "Bearer <token>"
   
@@ -35,7 +36,7 @@ export const getSites = async (event: APIGatewayProxyEvent): Promise<APIGatewayP
   return sendResponse(response.status, data);
 };
 
-// 3. GET DATA (GET) - Supports Query Params like ?siteId=123
+// GET DATA (GET) - Supports Query Params like ?siteId=123
 export const getData = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const token = event.headers['authorization'];
 
@@ -47,15 +48,16 @@ export const getData = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
   }
 
   //const queryParams = new URLSearchParams(event.queryStringParameters as any).toString();
-  const response = await fetch(`${BASE_URL}/apiV2/GetData?${pathParams}`, {
+  const response = await fetch(`${BASE_URL}/apiV2/GetData/${pathParams}`, {
     method: 'GET',
     headers: { 'Authorization': token || '' }
   });
+  console.log(`${BASE_URL}/apiV2/GetData?${pathParams}`);
   const data = await response.json();
   return sendResponse(response.status, data);
 };
 
-// 4. LOGOFF (POST)
+// LOGOFF (POST)
 export const logoff = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const token = event.headers['authorization'];
   
@@ -66,3 +68,17 @@ export const logoff = async (event: APIGatewayProxyEvent): Promise<APIGatewayPro
   const data = await response.json();
   return sendResponse(response.status, data);
 };
+
+//TEST METHOD TO FETCH DUMMY DATA
+export const getDummyData = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  const itemId = event.pathParameters?.proxy || '';
+  // if (!itemId) {
+  //   return sendResponse(400, { error: "itemId is required. Usage: /todos/{id}" });
+  // }
+  const response = await fetch(`${TEST_BASE_URL}/todos/${itemId}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  });
+  const data = await response.json();
+  return sendResponse(200, data);
+}
