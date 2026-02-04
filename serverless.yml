@@ -1,0 +1,39 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: lahirumadushan
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: aws-lambda-nodejs-ts4
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  region: us-east-1
+  environment:
+    WM_USERNAME: ${env:WM_USERNAME}
+    WM_PASSWORD: ${env:WM_PASSWORD}
+    WM_BASE_URL: ${env:WM_BASE_URL}
+
+# build:
+#   esbuild:
+#     bundle: true      # This allows you to use 'import' and 'fetch'
+#     minify: true
+
+functions:
+  login:
+    handler: handler.login
+    events:
+      - httpApi: 'POST /apiV2/Login'
+
+  getSites:
+    handler: handler.getSites
+    events:
+      - httpApi: 'GET /apiV2/GetMySitesAndMeasures'
+
+  getData:
+    handler: handler.getData
+    events:
+      - httpApi: 'GET /apiV2/GetData/{proxy+}'
+
+  logoff:
+    handler: handler.logoff
+    events:
+      - httpApi: 'POST /apiV2/Logoff'
